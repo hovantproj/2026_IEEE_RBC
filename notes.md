@@ -101,3 +101,39 @@ Listen to Echo (amount of time the signal is on)
 Use the NewPing library
 
 ![[Pasted image 20260905114747.png|347]]
+
+
+
+## Algorithms
+### Line following
+-  If left IR sensor detects line, rotate right wheel
+- If right IR sensor detects line, rotate left wheel
+- If no line is detected, rotate both wheels
+
+### Object tracking
+- Rotate robot slowly and search for closest object within certain distance
+- If object detected, rotate both wheels towards object.
+- If object missing, repeat algorithm from beginning.
+- Repeat until object is within distance, then close the end effector.
+
+## Pinouts
+![[Pasted image 20260905114106.png]]
+
+## Ultrasonic
+- Vcc (**3.3 V**)
+- Gnd (0 V)
+- Trig (Input)
+- Echo (Output)
+
+- Set Trig to High for 10 microseconds, then back to Low
+- Listen to Echo (amount of time the signal is on)
+- Use the NewPing library
+
+
+
+
+
+
+
+
+
