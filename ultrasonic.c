@@ -25,9 +25,12 @@
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
-void ping() {
+int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
+    if (dist > 0) {
+        digitalWrite(2, 1);
+    }
     return dist;
 }
 
