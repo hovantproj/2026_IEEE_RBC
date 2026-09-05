@@ -1,6 +1,6 @@
 # Pseudocode
 
-conceptualise autonomous behaviour as a finite state machine
+conceptualise autonomous behaviour as a bi-layered finite state machine
 
 diversify movement from ball extraction
 
