@@ -73,4 +73,24 @@ White board is high reflectance
 - If object missing, repeat algorithm from beginning.
 - Repeat until object is within distance, then close the end effector.
 
-### Pinouts
+## Pinouts
+![[Pasted image 20260905114106.png]]
+
+## Ultrasonic
+- Vcc (**3.3 V**)
+- Gnd (0 V)
+- Trig (Input)
+- Echo (Output)
+
+- Set Trig to High for 10 microseconds, then back to Low
+- Listen to Echo (amount of time the signal is on)
+- Use the NewPing library
+
+
+
+
+
+
+
+
+
