@@ -32,6 +32,7 @@ Servo servo_left;
 #define TRIGGER_PIN 23
 #define ECHO_PIN 36
 #define MAX_DISTANCE 50 // In cm
+#define THRESH_DIST 5
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 

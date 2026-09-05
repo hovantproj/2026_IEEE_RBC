@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <NewPing.h>
 
 // define onboard ESP LED for debugging
 #define ESP_LED 2
@@ -25,14 +26,17 @@
 #define TRIGGER_PIN 23
 #define ECHO_PIN 36
 #define MAX_DISTANCE 50 // In cm
+#define THRESH_DIST 5
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
 int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
-    if (dist > 0) {
-        digitalWrite(ESP_LED, 1);
+    if (dist > 0 && dist < THRESH_DIST) {
+      digitalWrite(ESP_LED, 1);
+    } else {
+      digitalWrite(ESP_LED, 0);
     }
     return dist;
 }
@@ -43,5 +47,6 @@ void setup() {
 }
 
 void loop() {
-    
+  delay(500);
+  get_dist_ultrasonic();
 }
