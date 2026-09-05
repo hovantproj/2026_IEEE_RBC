@@ -16,10 +16,11 @@
 // define IR pins
 #define IR1 34
 #define IR2 35
+#define IR3 39
 
 // define US pins
 #define TRIGGER_PIN 23
-#define ECHO_PIN 26
+#define ECHO_PIN 36
 #define MAX_DISTANCE 50 // In cm
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
