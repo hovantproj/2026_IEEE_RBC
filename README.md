@@ -7,4 +7,4 @@
 
 **Ethan**: The nonchalant subtle goat. This guy skips classes and doesn't do his pre-learning yet can pass by just taking one look at the slides.
 
-**Declan**: 
+**Declan**: The final goat of the team, 100 WAM on the way and go getting self starter. Professional programmer and carry.
