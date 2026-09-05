@@ -91,6 +91,7 @@ void setup() {
     pinMode(ESP_LED, OUTPUT);
 
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
+    delay(2000);
 }
 
 void loop() {

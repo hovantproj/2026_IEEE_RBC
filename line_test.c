@@ -94,6 +94,14 @@ void stop() {
 }
 
 void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
+    Serial.print("Left: ");
+    Serial.print(analogLeft);
+    Serial.print(" Middle: ");
+    Serial.print(analogMiddle);
+    Serial.print(" Right: ");
+    Serial.print(analogRight);
+    Serial.print('\n')
+
     int mask = 0;
     mask |= (analogLeft >= LINE_THRESHOLD) ? LEFT_BIT : 0;
     mask |= (analogMiddle >= LINE_THRESHOLD) ? MID_BIT : 0;
@@ -133,6 +141,10 @@ void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
 }
 
 void setup() {
+    // configure serial connection for debug print
+    Serial.begin(115200); // Open serial monitor at 115200 baud to see results.
+    delay(2000);
+
     // configure onboard LED for debugging
     pinMode(ESP_LED, OUTPUT);
 
