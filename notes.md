@@ -12,6 +12,8 @@ NewPing (Tim Eckel) library
 Use Examples>ESP32>AnalogRead example template for reading analogue signals
 Use Examples>Basics>DigitalRead example template for reading digital signals
 
+## Pin Config
+
 | Device                | Signal               | Pin / Connection |
 | --------------------- | -------------------- | ---------------: |
 | **Servo 1**           | PWM (Yellow)         |      **GPIO 18** |
@@ -37,3 +39,9 @@ Use Examples>Basics>DigitalRead example template for reading digital signals
 |                       | ECHO (output / READ) |      **GPIO 36** |
 |                       | Vcc                  |             3.3V |
 |                       | Gnd                  |               0V |
+## Components
+
+### Power
+
+Black tape is low reflectance
+White board is high reflectance
