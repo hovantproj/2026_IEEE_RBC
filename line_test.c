@@ -148,6 +148,9 @@ void setup() {
     pinMode(BIN1, OUTPUT);
     pinMode(BIN2, OUTPUT);
     pinMode(BPWM, OUTPUT);
+
+    // give 5 seconds to disconnect
+    delay(5000);
 }
 
 void loop() {
