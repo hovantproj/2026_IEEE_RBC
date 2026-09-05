@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 // define servo pins
-#define SERVO1 18 // PWM pin for servo 1
-#define SERVO2 19 // PWM pin for servo 2
+#define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
+#define SERVO_LEFT 19 // PWM pin for servo 2 (left)
 
 // define motor pins
 #define AIN1 27
@@ -13,14 +13,19 @@
 #define BPWM 26
 #define STBY 32
 
-// define IR pins
+// define IR pins & IR hardcoded values
 #define IR1 34
 #define IR2 35
 #define IR3 39
 
+#define LINE_THRESHOLD = 16
+#define LEFT_BIT   (1 << 2)  // 4
+#define MID_BIT    (1 << 1)  // 2
+#define RIGHT_BIT  (1 << 0)  // 1
+
 // define US pins
 #define TRIGGER_PIN 23
-#define ECHO_PIN 26
+#define ECHO_PIN 36
 #define MAX_DISTANCE 50
 
 void forward(int speed) {
@@ -79,10 +84,38 @@ void right(int speed) {
     analogWrite(BPWM, speed);
 }
 
+void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
+    int mask = 0;
+    mask |= (analogLeft >= LINE_THRESHOLD) ? LEFT_BIT : 0;
+    mask |= (analogMiddle >= LINE_THRESHOLD) ? MID_BIT : 0;
+    mask |= (analogRight >= LINE_THRESHOLD) ? RIGHT_BIT : 0;
+
+    switch (mask) {
+        case 0: // 000 - no line detected
+
+            break;
+        case RIGHT_BIT: // 001 - only right
+            break;
+        case MID_BIT: // 010 - only middle
+            break;
+        case MID_BIT | RIGHT_BIT: // 011 - robot drifting left -> turn right
+            break;
+        case LEFT_BIT: // 100 - only left
+            break;
+        case LEFT_BIT | RIGHT_BIT: // 101 - idk intersection or smth
+            break;
+        case LEFT_BIT | MID_BIT: //110 - robot drifting right -> turn left
+            break;
+        case LEFT_BIT | MID_BIT | RIGHT_BIT:
+            break;
+    }
+}
+
 void setup() {
     // configure IR pins
     pinMode(IR1, INPUT);
     pinMode(IR2, INPUT);
+    analogReadResolution(5); // set the resolution to 5 bits (0-31)
 
     // configure motor pins
     pinMode(AIN1, OUTPUT);
@@ -92,8 +125,6 @@ void setup() {
     pinMode(BIN2, OUTPUT);
     pinMode(BPWM, OUTPUT);
 }
-
-
 
 void loop() {
     // 

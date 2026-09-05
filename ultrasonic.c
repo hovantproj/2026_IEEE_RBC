@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 // define servo pins
-#define SERVO1 18 // PWM pin for servo 1
-#define SERVO2 19 // PWM pin for servo 2
+#define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
+#define SERVO_LEFT 19 // PWM pin for servo 2 (left)
 
 // define motor pins
 #define AIN1 27
@@ -20,7 +20,7 @@
 
 // define US pins
 #define TRIGGER_PIN 23
-#define ECHO_PIN 26
+#define ECHO_PIN 36
 #define MAX_DISTANCE 50 // In cm
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
