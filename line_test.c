@@ -21,7 +21,7 @@
 #define IR2 35
 #define IR3 39
 
-#define LINE_THRESHOLD = 16
+#define LINE_THRESHOLD 16
 #define LEFT_BIT   (1 << 2)  // 4
 #define MID_BIT    (1 << 1)  // 2
 #define RIGHT_BIT  (1 << 0)  // 1
@@ -100,7 +100,7 @@ void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
     Serial.print(analogMiddle);
     Serial.print(" Right: ");
     Serial.print(analogRight);
-    Serial.print('\n')
+    Serial.print('\n');
 
     int mask = 0;
     mask |= (analogLeft >= LINE_THRESHOLD) ? LEFT_BIT : 0;
