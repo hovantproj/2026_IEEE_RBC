@@ -12,3 +12,28 @@ NewPing (Tim Eckel) library
 Use Examples>ESP32>AnalogRead example template for reading analogue signals
 Use Examples>Basics>DigitalRead example template for reading digital signals
 
+| Device                | Signal               | Pin / Connection |
+| --------------------- | -------------------- | ---------------: |
+| **Servo 1**           | PWM (Yellow)         |      **GPIO 18** |
+|                       | Power (Red)          |               5V |
+|                       | GND (Brown)          |              GND |
+| **Servo 2**           | PWM                  |      **GPIO 19** |
+|                       | Power (Red)          |               5V |
+|                       | GND (Brown)          |              GND |
+| **TB6612FNG Motor A** | AIN1                 |      **GPIO 27** |
+|                       | AIN2                 |      **GPIO 14** |
+|                       | PWMA                 |      **GPIO 25** |
+| **TB6612FNG Motor B** | BIN1                 |      **GPIO 13** |
+|                       | BIN2                 |      **GPIO 12** |
+|                       | PWMB                 |      **GPIO 26** |
+| **TB6612FNG**         | STBY                 |      **GPIO 32** |
+| **IR Sensor 1**       | OUT                  |      **GPIO 34** |
+|                       | VCC                  |             3.3V |
+|                       | GND                  |              GND |
+| **IR Sensor 2**       | OUT                  |      **GPIO 35** |
+|                       | VCC                  |             3.3V |
+|                       | GND                  |              GND |
+| **Ultrasonic**        | TRIG                 |      **GPIO 23** |
+|                       | ECHO (output / READ) |      **GPIO 36** |
+|                       | Vcc                  |             3.3V |
+|                       | Gnd                  |               0V |
