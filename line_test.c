@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 // define servo pins
-#define SERVO1 18 // PWM pin for servo 1
-#define SERVO2 19 // PWM pin for servo 2
+#define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
+#define SERVO_LEFT 19 // PWM pin for servo 2 (left)
 
 // define motor pins
 #define AIN1 27
