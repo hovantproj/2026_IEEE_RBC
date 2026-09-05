@@ -42,6 +42,22 @@ Use Examples>Basics>DigitalRead example template for reading digital signals
 ## Components
 
 ### Power
+Three voltage levels
+- 7.2 V (from battery)
+- 5 V (from buck converter)
+- 3.3 V (from ESP32)
 
+**Buck converter** needs to be configured for 5V output
+- twist screw, press button to toggle display between in/out voltage
+
+![[Pasted image 20260905113637.png|327]]
+
+**Lever connecter**
+- same colours are shorted together
+
+
+### Ultrasonic Sensor 
 Black tape is low reflectance
 White board is high reflectance
+
+### 
