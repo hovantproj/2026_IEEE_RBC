@@ -21,7 +21,7 @@
 #define IR2 35
 #define IR3 39
 
-#define LINE_THRESHOLD 16
+#define LINE_THRESHOLD 12
 #define LEFT_BIT   (1 << 2)  // 4
 #define MID_BIT    (1 << 1)  // 2
 #define RIGHT_BIT  (1 << 0)  // 1
@@ -33,12 +33,12 @@
 
 void forward(int speed) {
     // motor A direction
-    digitalWrite(AIN1, HIGH);
-    digitalWrite(AIN2, LOW);
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
 
     // motor B direction
-    digitalWrite(BIN1, HIGH);
-    digitalWrite(BIN2, LOW);
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, HIGH);
 
     // set speeds
     analogWrite(APWM, speed);
@@ -47,12 +47,12 @@ void forward(int speed) {
 
 void backward(int speed) {
     // motor A direction
-    digitalWrite(AIN1, LOW);
-    digitalWrite(AIN2, HIGH);
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
 
     // motor B direction
-    digitalWrite(BIN1, LOW);
-    digitalWrite(BIN2, HIGH);
+    digitalWrite(BIN1, HIGH);
+    digitalWrite(BIN2, LOW);
 
     // set speeds
     analogWrite(APWM, speed);
