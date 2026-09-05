@@ -76,15 +76,11 @@ int get_dist_ultrasonic() {
         digitalWrite(ESP_LED, 1);
         if (claw_opened == true) {
             close();
-            claw_opened = false;
+            claw_opened = false; // Locked
         }
         
     } else if (dist > THRESH_DIST) {
         digitalWrite(ESP_LED, 0);
-        if (claw_opened == false) {
-            open();
-            claw_opened = true;
-        }
     }
     return dist;
 }
@@ -102,7 +98,6 @@ void setup() {
     pinMode(ESP_LED, OUTPUT);
 
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
-    delay(2000);
 }
 
 void loop() {
