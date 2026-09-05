@@ -4,6 +4,8 @@
 #define SERVO1 18 // PWM pin for servo 1
 #define SERVO2 19 // PWM pin for servo 2
 
+
+
 // define motor pins
 #define AIN1 27
 #define AIN2 14
@@ -20,24 +22,33 @@
 
 // define US pins
 #define TRIGGER_PIN 23
-#define ECHO_PIN 26
+#define ECHO_PIN 36
 #define MAX_DISTANCE 50 // In cm
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
-int get_dist_ultrasonic() {
-    int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
-    dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
-    if (dist > 0) {
-        digitalWrite(2, 1);
-    }
-    return dist;
-}
-
 void setup() {
-    
+    servo.attach(SERVO1)
+
+    servo.write(0);
+    delay(5000);
+
+    for (int servoPos = 0; servoPos <= 170; servoPos += 10) {
+        servo.write(servoPos);
+        delay(20);
+    }
 }
 
 void loop() {
-    
+    delay(3000);
+
+    servo1.write(0);
+    servo2.write(170)
+    delay(5000);
+
+    for (int servoPos = 0; servoPos <= 170; servoPos += 10) {
+        servo1.write(170-servoPos);
+        servo2.write(servoPos);
+        delay(100);
+    }
 }
