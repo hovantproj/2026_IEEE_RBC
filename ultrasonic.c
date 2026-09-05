@@ -1,5 +1,8 @@
 #include <Arduino.h>
 
+// define onboard ESP LED for debugging
+#define ESP_LED 2
+
 // define servo pins
 #define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
 #define SERVO_LEFT 19 // PWM pin for servo 2 (left)
@@ -29,13 +32,14 @@ int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
     if (dist > 0) {
-        digitalWrite(2, 1);
+        digitalWrite(ESP_LED, 1);
     }
     return dist;
 }
 
 void setup() {
-    
+    // configure onboard LED for debugging
+    pinMode(ESP_LED, OUTPUT);
 }
 
 void loop() {

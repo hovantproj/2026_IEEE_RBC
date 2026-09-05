@@ -1,5 +1,8 @@
 #include <Arduino.h>
 
+// define onboard ESP LED for debugging
+#define ESP_LED 2
+
 // define servo pins
 #define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
 #define SERVO_LEFT 19 // PWM pin for servo 2 (left)
@@ -84,6 +87,12 @@ void right(int speed) {
     analogWrite(BPWM, speed);
 }
 
+void stop() {
+    // set speeds to 0
+    analogWrite(APWM, 0);
+    analogWrite(BPWM, 0);
+}
+
 void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
     int mask = 0;
     mask |= (analogLeft >= LINE_THRESHOLD) ? LEFT_BIT : 0;
@@ -92,26 +101,33 @@ void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
 
     switch (mask) {
         case 0: // 000 - no line detected
-
+            forward;
             break;
         case RIGHT_BIT: // 001 - only right
+            right;
             break;
         case MID_BIT: // 010 - only middle
+            forward;
             break;
         case MID_BIT | RIGHT_BIT: // 011 - robot drifting left -> turn right
             break;
         case LEFT_BIT: // 100 - only left
+            left;
             break;
-        case LEFT_BIT | RIGHT_BIT: // 101 - idk intersection or smth
+        case LEFT_BIT | RIGHT_BIT: // 101 - idk branch intersection or smth, prolly just pick a direction?
             break;
         case LEFT_BIT | MID_BIT: //110 - robot drifting right -> turn left
             break;
         case LEFT_BIT | MID_BIT | RIGHT_BIT:
+            stop();
             break;
     }
 }
 
 void setup() {
+    // configure onboard LED for debugging
+    pinMode(ESP_LED, OUTPUT);
+
     // configure IR pins
     pinMode(IR1, INPUT);
     pinMode(IR2, INPUT);
