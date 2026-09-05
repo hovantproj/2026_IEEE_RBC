@@ -1,10 +1,18 @@
 #include <Arduino.h>
+#include <ESP32Servo.h>
+#include <NewPing.h>
 
+#define ESP_LED 2
 // define servo pins
-#define SERVO1 18 // PWM pin for servo 1
-#define SERVO2 19 // PWM pin for servo 2
+#define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
+#define SERVO_LEFT 19 // PWM pin for servo 2 (left)
+#define SERVO_SPD 5 // Degrees per interval
 
+#define MIN 20
+#define MAX 150
 
+Servo servo_right;
+Servo servo_left;
 
 // define motor pins
 #define AIN1 27
@@ -27,28 +35,33 @@
 
 NewPing ultrasonic(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 
-void setup() {
-    servo.attach(SERVO1)
-
-    servo.write(0);
-    delay(5000);
-
-    for (int servoPos = 0; servoPos <= 170; servoPos += 10) {
-        servo.write(servoPos);
-        delay(20);
+void open() {
+    for (int servoPos = MIN; servoPos <= MAX; servoPos += SERVO_SPD) {
+        servo_right.write(servoPos);
+        servo_left.write((MAX + MIN) - servoPos);
+        delay(100);
     }
+}
+
+void close() {
+    for (int servoPos = MIN; servoPos <= MAX; servoPos += SERVO_SPD) {
+        servo_left.write(servoPos);
+        servo_right.write((MAX + MIN) - servoPos);
+        delay(100);
+    }
+}
+
+void setup() {
+    servo_right.attach(SERVO_RIGHT);
+    servo_left.attach(SERVO_LEFT);
+
+    servo_right.write(MAX);
+    servo_left.write(MIN);
 }
 
 void loop() {
     delay(3000);
-
-    servo1.write(0);
-    servo2.write(170)
-    delay(5000);
-
-    for (int servoPos = 0; servoPos <= 170; servoPos += 10) {
-        servo1.write(170-servoPos);
-        servo2.write(servoPos);
-        delay(100);
-    }
+    open();
+    delay(3000);
+    close();
 }
