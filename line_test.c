@@ -135,6 +135,12 @@ void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
             break;
         case LEFT_BIT | MID_BIT | RIGHT_BIT:
             digitalWrite(ESP_LED, LOW);
+            // move forward if after reset
+            // maybe include timer?????
+            // stop if reach ball
+            // grab ball untile ball is contained
+            // another timer
+            // reach exit and stop 
             stop();
             break;
     }
