@@ -72,20 +72,6 @@ int get_dist_ultrasonic() {
     Serial.print(dist);
     Serial.print("cm\n");
 
-    if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
-        digitalWrite(ESP_LED, 1);
-        if (claw_opened == true) {
-            close();
-            claw_opened = false;
-        }
-        
-    } else if (dist > THRESH_DIST) {
-        digitalWrite(ESP_LED, 0);
-        if (claw_opened == false) {
-            open();
-            claw_opened = true;
-        }
-    }
     return dist;
 }
 
@@ -98,6 +84,7 @@ void setup() {
     servo_right.write(MAX);
     servo_left.write(MIN);
     claw_opened = true;
+    ball_contained = false;
 
     pinMode(ESP_LED, OUTPUT);
 
@@ -107,6 +94,29 @@ void setup() {
 
 void loop() {
     delay(500);
-    get_dist_ultrasonic();
+
+    // after it dectects all 3 ir on for 3s
+    //looks for ball with ultrasonic
+    //{code for looking left and right till ball is detected}
+    //{code for driving to the ball until distance is reached}
+    int dist = get_dist_ultrasonic();
+    if not ball_contained {
+        if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
+            digitalWrite(ESP_LED, 1);
+            if (claw_opened == true) {
+                close();
+                claw_opened = false;
+                delay(200);
+                dist = get_dist_ultrasonic()
+                if (dist > THRESH_DIST){
+                    digitalWrite(ESP_LED, 0);
+                    open();
+                    claw_opened == true;
+                } else {
+                    ball_contained = true;
+                }
+            }
+        }        
+    }
 }
 
