@@ -64,7 +64,11 @@ void close() {
 
 int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
-    dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
+
+    Serial.print("Ping: ");
+    Serial.print(dist);
+    Serial.print("cm");
+    // dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
     if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
         digitalWrite(ESP_LED, 1);
         close();
@@ -85,6 +89,8 @@ void setup() {
     servo_left.write(MIN);
 
     pinMode(ESP_LED, OUTPUT);
+
+    Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
 }
 
 void loop() {
