@@ -8,3 +8,7 @@ use the pin numbers written on the board (or pink labels `GPIOxx`)
 >7.2V should power ONLY the buck converter, and motor driver
 >Motors might require different PWM values for the same speed (calibration)
 
+NewPing (Tim Eckel) library
+Use Examples>ESP32>AnalogRead example template for reading analogue signals
+Use Examples>Basics>DigitalRead example template for reading digital signals
+
