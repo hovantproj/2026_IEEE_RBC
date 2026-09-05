@@ -45,3 +45,18 @@ Use Examples>Basics>DigitalRead example template for reading digital signals
 
 Black tape is low reflectance
 White board is high reflectance
+
+
+## Algorithms
+### Line following
+-  If left IR sensor detects line, rotate right wheel
+- If right IR sensor detects line, rotate left wheel
+- If no line is detected, rotate both wheels
+
+### Object tracking
+- Rotate robot slowly and search for closest object within certain distance
+- If object detected, rotate both wheels towards object.
+- If object missing, repeat algorithm from beginning.
+- Repeat until object is within distance, then close the end effector.
+
+### Pinouts
