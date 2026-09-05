@@ -35,6 +35,9 @@ Use Examples>Basics>DigitalRead example template for reading digital signals
 | **IR Sensor 2**       | OUT                  |      **GPIO 35** |
 |                       | VCC                  |             3.3V |
 |                       | GND                  |              GND |
+| **IR Sensor 3**       | OUT                  |      **GPIO 39** |
+|                       | VCC                  |             3.3V |
+|                       | GND                  |              GND |
 | **Ultrasonic**        | TRIG                 |      **GPIO 23** |
 |                       | ECHO (output / READ) |      **GPIO 36** |
 |                       | Vcc                  |             3.3V |
@@ -119,15 +122,6 @@ Use the NewPing library
 ## Pinouts
 ![[Pasted image 20260905114106.png]]
 
-## Ultrasonic
-- Vcc (**3.3 V**)
-- Gnd (0 V)
-- Trig (Input)
-- Echo (Output)
-
-- Set Trig to High for 10 microseconds, then back to Low
-- Listen to Echo (amount of time the signal is on)
-- Use the NewPing library
 
 
 
