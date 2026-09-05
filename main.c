@@ -28,6 +28,12 @@ Servo servo_left;
 #define IR2 35
 #define IR3 39
 
+// Line threshold
+#define LINE_THRESHOLD = 16
+#define LEFT_BIT   (1 << 2)  // 4
+#define MID_BIT    (1 << 1)  // 2
+#define RIGHT_BIT  (1 << 0)  // 1
+
 // define US pins
 #define TRIGGER_PIN 23
 #define ECHO_PIN 36
@@ -59,12 +65,12 @@ void close() {
 int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
-    if (dist > 0 && dist < THRESH_DIST) {
-      digitalWrite(ESP_LED, 1);
-      close();
-    } else {
-      digitalWrite(ESP_LED, 0);
-      open();
+    if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
+        digitalWrite(ESP_LED, 1);
+        close();
+    } else if (dist > THRESH_DIST) {
+        digitalWrite(ESP_LED, 0);
+        open();
     }
     return dist;
 }
