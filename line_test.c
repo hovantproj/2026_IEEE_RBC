@@ -101,24 +101,32 @@ void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
 
     switch (mask) {
         case 0: // 000 - no line detected
-            forward;
+            digitalWrite(ESP_LED, LOW);
+            forward();
             break;
         case RIGHT_BIT: // 001 - only right
-            right;
+            digitalWrite(ESP_LED, HIGH);
+            right();
             break;
         case MID_BIT: // 010 - only middle
-            forward;
+            digitalWrite(ESP_LED, HIGH);
+            forward();
             break;
         case MID_BIT | RIGHT_BIT: // 011 - robot drifting left -> turn right
+            digitalWrite(ESP_LED, LOW);
             break;
         case LEFT_BIT: // 100 - only left
-            left;
+            digitalWrite(ESP_LED, HIGH);
+            left();
             break;
         case LEFT_BIT | RIGHT_BIT: // 101 - idk branch intersection or smth, prolly just pick a direction?
+            digitalWrite(ESP_LED, LOW);
             break;
         case LEFT_BIT | MID_BIT: //110 - robot drifting right -> turn left
+            digitalWrite(ESP_LED, LOW);
             break;
         case LEFT_BIT | MID_BIT | RIGHT_BIT:
+            digitalWrite(ESP_LED, LOW);
             stop();
             break;
     }
@@ -143,5 +151,6 @@ void setup() {
 }
 
 void loop() {
-    // 
+    movementHandler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
+    delay(100);
 }
