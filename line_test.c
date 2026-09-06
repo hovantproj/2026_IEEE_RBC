@@ -108,7 +108,7 @@ int movementHandler(int analogLeft, int analogMiddle, int analogRight) {
     mask |= (analogRight >= LINE_THRESHOLD) ? RIGHT_BIT : 0;
 
     if (current_state==WAIT) {
-        if 
+        
     }
 
     if (current_state==START) {

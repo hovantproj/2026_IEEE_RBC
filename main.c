@@ -172,7 +172,13 @@ int verify() {
     forward(10);
 }
 
-int movement_handler(int analogLeft, int analogMiddle, int analogRight) {
+int normalise_ir() {
+    // read analog IR values from respective IRs
+    int analogLeft = analogRead(IR3);
+    int analogMiddle = analogRead(IR2);
+    int analogRight =  analogRead(IR1);
+
+    // serial prints for debugging
     Serial.print("Left: ");
     Serial.print(analogLeft);
     Serial.print(" Middle: ");
@@ -186,12 +192,28 @@ int movement_handler(int analogLeft, int analogMiddle, int analogRight) {
     mask |= (analogMiddle >= LINE_THRESHOLD) ? MID_BIT : 0;
     mask |= (analogRight >= LINE_THRESHOLD) ? RIGHT_BIT : 0;
 
+    return mask; // return IR mask (0 = white, 1 = black)
+}
+
+int movement_handler() {
+    
+    int ir_mask = normalise_ir(); // retrieve normalised IR values
+
     if (current_state==WAIT) {
-        if 
+        if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT ) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     if (current_state==START) {
-        if ()
+        forward(50);
+        if (ir_mask != LEFT_BIT | MID_BIT | RIGHT_BIT) {
+            return 1;
+        } else {
+            return;
+        }
     }
 
     switch (mask) {
