@@ -167,6 +167,11 @@ void stop() {
     analogWrite(BPWM, 0);
 }
 
+int verify() {
+    stop();
+    forward(10);
+}
+
 int movement_handler(int analogLeft, int analogMiddle, int analogRight) {
     Serial.print("Left: ");
     Serial.print(analogLeft);
@@ -247,7 +252,7 @@ void setup() {
 }
 
 void loop() {
-    delay(500);
+    delay(50);
 
     // after it dectects all 3 ir on for 3s
     //looks for ball with ultrasonic
@@ -257,10 +262,13 @@ void loop() {
     // get_dist_ultrasonic();
     switch(STATE) {
         case WAIT: // For at the start when we need to wait until it finds all 3 IRs on
-            movement_handler();
+            movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
         case START:
+            movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
         case LINE_FORWARD:
+            movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
         case VERIFY_END:
+            
         case FIND_BALL:
         case GRAB_BALL:
         case LEAVE_END:
