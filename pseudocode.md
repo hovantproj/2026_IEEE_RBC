@@ -30,7 +30,7 @@ state 5: stop
 we could do a thing where if it stops for any reason (e.g. attempt to grab ball but it's not in there) it opens its claws and stops until we move our hand in front of the US
 
 ### State Machine
-**State 0:**
+**State 0:** START
 - starts in the box
 - all IR's on
 - roughly facing correct direction
@@ -38,13 +38,13 @@ we could do a thing where if it stops for any reason (e.g. attempt to grab ball 
 
 state 0 -> state 1: until not 3 IR's detected
 
-**State 1:** line following algorithm
+**State 1:** LINE_FORWARD
 - follow line following algorithm
 - every 50ms
 
 state 1 -> state 2: all 3 IR's detected (probably in black box)
 
-**State 2:** verify it's actually in black box
+**State 2:** VERIFY_END (verify it's actually in black box)
 - do 2 cycles of moving forward like 2cm to verify it's in the black box
 - while polling ultrasonic between moves to ensure it's not gna hit the ball
 
@@ -54,7 +54,7 @@ state 1 -> state 2: all 3 IR's detected (probably in black box)
 state 2 -> state 3: finished verification
 state 2 -> state 3: ball close enough or smth
 
-**State 3:** find ball
+**State 3:** FIND_BALL (find the ball)
 - turn left slowly looking for ball (roughly 30 degrees)
 - turn right slowly looking for ball (roughly 60 degrees)
 
@@ -64,7 +64,7 @@ what happens if it doesn't find ball when it's in the end region?
 state 3 -> state 4: ball found
 state 3 -> state 3b: didn't find the ball
 
-**State 4:** capturing ball
+**State 4:** GRAB_BALL (grab the ball)
 if ball found by US:
 - move forward slowly until within 7 cm
 - toggle close on servo
@@ -78,22 +78,22 @@ if ball not captured successfully
 state 4 -> state 5: ball captured
 state 4 -> state 3: ball not captured properly
 
-**State 5:** navigating to border
+**State 5:** LEAVE_END (navigate to the border outside the end box)
 - drive straight until at least 1 IR turns off
 - drive straight until it turns back on (line detected)
 
 state 5 -> state 6: found line
 
-**State 6:** line following algorithm pt2
+**State 6:** LINE_BACK (line algorithm back to the start)
 - follow lines back home (until all 3 IR's triggered)
 
 state 6 -> state 7: all 3 IR's triggered
 
-**State 7:** verify it's actually in (starting) black box
+**State 7:** VERIFY_START (verify it's actually in (starting) black box)
 - do 2 cycles of moving forward like 2cm to verify it's in the black box
 
 state 7 -> state 6: not in black box
 state 7 -> state 8: in starting black box
 
-**State 8:** END
+**State 8:** STOP
 - stop
