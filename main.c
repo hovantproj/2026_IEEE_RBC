@@ -83,20 +83,6 @@ void close() {
 int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
-
-    if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
-        digitalWrite(ESP_LED, 1);
-        if (claw_opened == true) {
-            close();
-            claw_opened = false;
-        }
-    } else if (dist > THRESH_DIST) {
-        digitalWrite(ESP_LED, 0);
-        if (claw_opened == false) {
-            open();
-            claw_opened = true;
-        }
-    }
     
     Serial.print("Ping: ");
     Serial.print(dist);
@@ -235,28 +221,51 @@ int find_ball() {
     // SCANNING LEFT
     for (int i = 0; i < 500; i += 50) { // Pings US every 50 ms while it turns
         left(50);
+        stop();
         dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
         if (dist != -1) { // If it finds ball
-            
-            do { // And the ball is too far away
-                dist = get_dist_ultrasonic();
-                forward(10);
-                delay(50);
-            } (while dist > THRESH_DIST); // Keep inching until within range
+                return 1;
+            }
         }
+        delay(50);
     }
 
+    delay(500);
+
     // SCANNING RIGHT
-    for (int i = 0; i < 500; i += 50) { // Pings US every 50 ms while it turns
+    for (int i = 0; i < 1000; i += 50) { // Pings US every 50 ms while it turns
         right(50);
+        stop();
         dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
         if (dist != -1) { // If it finds ball
-            
-            do { // And the ball is too far away
-                dist = get_dist_ultrasonic();
-                forward(10);
-                delay(50);
-            } (while dist > THRESH_DIST); // Keep inching until within range
+            return 1;
+        } else {
+            return 0;
+        }
+        delay(50);
+    }
+}
+
+void grab() {
+    int dist = get_dist_ultrasonic();
+
+    do { // And the ball is too far away
+        dist = get_dist_ultrasonic();
+        forward(10);
+        delay(50);
+    } (while dist > THRESH_DIST); // Keep inching until within range
+
+    if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
+        digitalWrite(ESP_LED, 1);
+        if (claw_opened == true) {
+            close();
+            claw_opened = false;
+        }
+    } else if (dist > THRESH_DIST) {
+        digitalWrite(ESP_LED, 0);
+        if (claw_opened == false) {
+            open();
+            claw_opened = true;
         }
     }
 }
@@ -364,8 +373,15 @@ void loop() {
                 current_state = GRAB_BALL; // found ball, skip to grabbing the ball
             }
         case FIND_BALL:
-            find_ball();
+            if (find_ball() == 1) {
+                current_state = GRAB_BALL;
+            } else {
+                find_ball();
+            }
+
         case GRAB_BALL:
+            grab();
+            
         case LEAVE_END:
         case LINE_BACK:
         case VERIFY_START:
