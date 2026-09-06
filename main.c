@@ -4,16 +4,19 @@
 
 // Enumeration
 typedef enum {
-    START, // 0
-    LINE_FORWARD, // 1
-    VERIFY_END, // 2
-    FIND_BALL, // 3
-    GRAB_BALL, // 4
-    LEAVE_END, // 5
-    LINE_BACK, // 6
-    VERIFY_START, // 7
-    STOP // 8
-} STATES;
+    WAIT,
+    START,
+    LINE_FORWARD,
+    VERIFY_END,
+    FIND_BALL,
+    GRAB_BALL,
+    LEAVE_END, 
+    LINE_BACK, 
+    VERIFY_START, 
+    STOP 
+} STATE;
+
+STATE current_state = WAIT;
 
 #define ESP_LED 2
 // define servo pins
@@ -100,9 +103,121 @@ void get_dist_ultrasonic() {
     Serial.print("cm\n");
 }
 
+// Movement fucntions
+
+void forward(int speed) {
+    // motor A direction
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
+
+    // motor B direction
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, HIGH);
+
+    // set speeds
+    analogWrite(APWM, speed);
+    analogWrite(BPWM, speed);
+}
+
+void backward(int speed) {
+    // motor A direction
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
+
+    // motor B direction
+    digitalWrite(BIN1, HIGH);
+    digitalWrite(BIN2, LOW);
+
+    // set speeds
+    analogWrite(APWM, speed);
+    analogWrite(BPWM, speed);
+}
+
+void left(int speed) {
+// motor A direction
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
+
+    // motor B direction
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, HIGH);
+
+    // set speeds
+    analogWrite(APWM, speed);
+    analogWrite(BPWM, speed);
+}
+
+void right(int speed) {
+// motor A direction
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
+
+    // motor B direction
+    digitalWrite(BIN1, HIGH);
+    digitalWrite(BIN2, LOW);
+
+    // set speeds
+    analogWrite(APWM, speed);
+    analogWrite(BPWM, speed);
+}
+
+void stop() {
+    // set speeds to 0
+    analogWrite(APWM, 0);
+    analogWrite(BPWM, 0);
+}
+
+int movement_handler(int analogLeft, int analogMiddle, int analogRight) {
+    Serial.print("Left: ");
+    Serial.print(analogLeft);
+    Serial.print(" Middle: ");
+    Serial.print(analogMiddle);
+    Serial.print(" Right: ");
+    Serial.print(analogRight);
+    Serial.print('\n');
+
+    int mask = 0;
+    mask |= (analogLeft >= LINE_THRESHOLD) ? LEFT_BIT : 0;
+    mask |= (analogMiddle >= LINE_THRESHOLD) ? MID_BIT : 0;
+    mask |= (analogRight >= LINE_THRESHOLD) ? RIGHT_BIT : 0;
+
+    if (current_state==WAIT) {
+        if 
+    }
+
+    if (current_state==START) {
+        if ()
+    }
+
+    switch (mask) {
+        case 0: // 000 - no line detected
+            forward(50);
+            break;
+        case RIGHT_BIT: // 001 - only right
+            right(50);
+            break;
+        case MID_BIT: // 010 - only middle
+            forward(50);
+            break;
+        case MID_BIT | RIGHT_BIT: // 011 - robot drifting left -> turn right
+            break;
+        case LEFT_BIT: // 100 - only left
+            left(50);
+            break;
+        case LEFT_BIT | RIGHT_BIT: // 101 - idk branch intersection or smth, prolly just pick a direction?
+            break;
+        case LEFT_BIT | MID_BIT: //110 - robot drifting right -> turn left
+            break;
+        case LEFT_BIT | MID_BIT | RIGHT_BIT:
+            stop();
+            return 1; // return end found
+    }
+}
+
 // Main Functions
 
 void setup() {
+    // Servos
     servo_right.attach(SERVO_RIGHT);
     servo_left.attach(SERVO_LEFT);
 
@@ -112,8 +227,23 @@ void setup() {
 
     pinMode(ESP_LED, OUTPUT);
 
+    // configure IR pins
+    pinMode(IR1, INPUT);
+    pinMode(IR2, INPUT);
+    analogReadResolution(5); // set the resolution to 5 bits (0-31)
+
+    // configure motor pins
+    pinMode(AIN1, OUTPUT);
+    pinMode(AIN2, OUTPUT);
+    pinMode(APWM, OUTPUT);
+    pinMode(BIN1, OUTPUT);
+    pinMode(BIN2, OUTPUT);
+    pinMode(BPWM, OUTPUT);
+
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
-    delay(2000);
+
+    // give 5 seconds to disconnect
+    delay(5000);
 }
 
 void loop() {
@@ -125,11 +255,11 @@ void loop() {
     //{code for driving to the ball until distance is reached}
 
     // get_dist_ultrasonic();
-    switch(STATES) {
+    switch(STATE) {
+        case WAIT: // For at the start when we need to wait until it finds all 3 IRs on
+            movement_handler();
         case START:
-            
         case LINE_FORWARD:
-
         case VERIFY_END:
         case FIND_BALL:
         case GRAB_BALL:
