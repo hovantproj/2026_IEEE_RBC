@@ -2,6 +2,19 @@
 #include <ESP32Servo.h>
 #include <NewPing.h>
 
+// Enumeration
+typedef enum {
+    START, // 0
+    LINE_FORWARD, // 1
+    VERIFY_END, // 2
+    FIND_BALL, // 3
+    GRAB_BALL, // 4
+    LEAVE_END, // 5
+    LINE_BACK, // 6
+    VERIFY_START, // 7
+    STOP // 8
+} STATES;
+
 #define ESP_LED 2
 // define servo pins
 #define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
@@ -31,7 +44,7 @@ bool claw_opened;
 #define IR3 39
 
 // Line threshold
-#define LINE_THRESHOLD = 16
+#define LINE_THRESHOLD 16
 #define LEFT_BIT   (1 << 2)  // 4
 #define MID_BIT    (1 << 1)  // 2
 #define RIGHT_BIT  (1 << 0)  // 1
@@ -64,15 +77,27 @@ void close() {
 
 // Ultrasonic Functions
 
-int get_dist_ultrasonic() {
+void get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
+
+    if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
+        digitalWrite(ESP_LED, 1);
+        if (claw_opened == true) {
+            close();
+            claw_opened = false;
+        }
+    } else if (dist > THRESH_DIST) {
+        digitalWrite(ESP_LED, 0);
+        if (claw_opened == false) {
+            open();
+            claw_opened = true;
+        }
+    }
     
     Serial.print("Ping: ");
     Serial.print(dist);
     Serial.print("cm\n");
-
-    return dist;
 }
 
 // Main Functions
@@ -84,7 +109,6 @@ void setup() {
     servo_right.write(MAX);
     servo_left.write(MIN);
     claw_opened = true;
-    ball_contained = false;
 
     pinMode(ESP_LED, OUTPUT);
 
@@ -99,24 +123,20 @@ void loop() {
     //looks for ball with ultrasonic
     //{code for looking left and right till ball is detected}
     //{code for driving to the ball until distance is reached}
-    int dist = get_dist_ultrasonic();
-    if not ball_contained {
-        if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
-            digitalWrite(ESP_LED, 1);
-            if (claw_opened == true) {
-                close();
-                claw_opened = false;
-                delay(200);
-                dist = get_dist_ultrasonic()
-                if (dist > THRESH_DIST){
-                    digitalWrite(ESP_LED, 0);
-                    open();
-                    claw_opened == true;
-                } else {
-                    ball_contained = true;
-                }
-            }
-        }        
+
+    // get_dist_ultrasonic();
+    switch(STATES) {
+        case START:
+            
+        case LINE_FORWARD:
+
+        case VERIFY_END:
+        case FIND_BALL:
+        case GRAB_BALL:
+        case LEAVE_END:
+        case LINE_BACK:
+        case VERIFY_START:
+        case STOP:
     }
 }
 
