@@ -52,7 +52,7 @@ state 1 -> state 2: all 3 IR's detected (probably in black box)
 >Combine with US to make sure it's not hitting anything??
 
 state 2 -> state 3: finished verification
-state 2 -> state 3: ball close enough or smth
+state 2 -> state 4: ball close enough or smth
 
 **State 3:** FIND_BALL (find the ball)
 - turn left slowly looking for ball (roughly 30 degrees)

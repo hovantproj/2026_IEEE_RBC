@@ -93,7 +93,7 @@ void stop() {
     analogWrite(BPWM, 0);
 }
 
-void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
+int movementHandler(int analogLeft, int analogMiddle, int analogRight) {
     Serial.print("Left: ");
     Serial.print(analogLeft);
     Serial.print(" Middle: ");
@@ -107,42 +107,36 @@ void movementHandler(int analogLeft, int analogMiddle, int analogRight) {
     mask |= (analogMiddle >= LINE_THRESHOLD) ? MID_BIT : 0;
     mask |= (analogRight >= LINE_THRESHOLD) ? RIGHT_BIT : 0;
 
+    if (current_state==WAIT) {
+        if 
+    }
+
+    if (current_state==START) {
+        if ()
+    }
+
     switch (mask) {
         case 0: // 000 - no line detected
-            digitalWrite(ESP_LED, LOW);
             forward(50);
             break;
         case RIGHT_BIT: // 001 - only right
-            digitalWrite(ESP_LED, HIGH);
             right(50);
             break;
         case MID_BIT: // 010 - only middle
-            digitalWrite(ESP_LED, HIGH);
             forward(50);
             break;
         case MID_BIT | RIGHT_BIT: // 011 - robot drifting left -> turn right
-            digitalWrite(ESP_LED, LOW);
             break;
         case LEFT_BIT: // 100 - only left
-            digitalWrite(ESP_LED, HIGH);
             left(50);
             break;
         case LEFT_BIT | RIGHT_BIT: // 101 - idk branch intersection or smth, prolly just pick a direction?
-            digitalWrite(ESP_LED, LOW);
             break;
         case LEFT_BIT | MID_BIT: //110 - robot drifting right -> turn left
-            digitalWrite(ESP_LED, LOW);
             break;
         case LEFT_BIT | MID_BIT | RIGHT_BIT:
-            digitalWrite(ESP_LED, LOW);
-            // move forward if after reset
-            // maybe include timer?????
-            // stop if reach ball
-            // grab ball untile ball is contained
-            // another timer
-            // reach exit and stop 
             stop();
-            break;
+            return 1; // return end found
     }
 }
 
