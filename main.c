@@ -276,6 +276,7 @@ int movement_handler() {
 
     if (current_state==WAIT) {
         if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT ) {
+            stop();
             return 1;
         } else {
             return 0;
@@ -285,26 +286,38 @@ int movement_handler() {
     if (current_state==START) {
         forward(50);
         if (ir_mask != LEFT_BIT | MID_BIT | RIGHT_BIT) {
+            stop();
             return 1;
         } else {
-            return;
+            return 0;
+        }
+    }
+
+    if (current_state==LEAVE_END) {
+        forward(50);
+        if (ir_mask != LEFT_BIT | MID_BIT | RIGHT_BIT) {
+            stop();
+            return 1;
+        } else {
+            return 0;
         }
     }
 
     switch (mask) {
         case 0: // 000 - no line detected
-            forward(50);
+            forward(100);
             break;
         case RIGHT_BIT: // 001 - only right
-            right(50);
+            right(100);
             break;
         case MID_BIT: // 010 - only middle
-            forward(50);
+            forward(100);
             break;
         case MID_BIT | RIGHT_BIT: // 011 - robot drifting left -> turn right
+
             break;
         case LEFT_BIT: // 100 - only left
-            left(50);
+            left(100);
             break;
         case LEFT_BIT | RIGHT_BIT: // 101 - idk branch intersection or smth, prolly just pick a direction?
             break;
@@ -359,11 +372,11 @@ void loop() {
     // get_dist_ultrasonic();
     switch(current_state) {
         case WAIT: // For at the start when we need to wait until it finds all 3 IRs on
-            movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
+            movement_handler();
         case START:
-            movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
+            movement_handler();
         case LINE_FORWARD:
-            movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
+            movement_handler();
         case VERIFY_END:
             if (verify_box() == 0) { // not in box
                 current_state = LINE_FORWARD;
@@ -381,11 +394,24 @@ void loop() {
 
         case GRAB_BALL:
             grab();
-            
+            current_state = LEAVE_END;
         case LEAVE_END:
+            if (movement_handler() == 1) {
+                // has left end
+                current_state = LINE_BACK;
+            }
         case LINE_BACK:
+            movement_handler();
         case VERIFY_START:
+            if (verify_box()==1) {
+                current_state = STOP;
+            }
         case STOP:
+            forward(10);
+            delay(500);
+            stop();
+            open();
+            delay(10000);
     }
 }
 
