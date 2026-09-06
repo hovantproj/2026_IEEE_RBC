@@ -22,7 +22,7 @@ STATE current_state = WAIT;
 // define servo pins
 #define SERVO_RIGHT 18 // PWM pin for servo 1 (right)
 #define SERVO_LEFT 19 // PWM pin for servo 2 (left)
-#define SERVO_SPD 5 // Degrees per interval
+#define SERVO_SPD 1 // Degrees per interval
 
 #define MIN 20
 #define MAX 150
@@ -66,7 +66,7 @@ void open() {
     for (int servoPos = MIN; servoPos <= MAX; servoPos += SERVO_SPD) {
         servo_right.write(servoPos);
         servo_left.write((MAX + MIN) - servoPos);
-        delay(100);
+        delay(20);
     }
 }
 
@@ -74,7 +74,7 @@ void close() {
     for (int servoPos = MIN; servoPos <= MAX; servoPos += SERVO_SPD) {
         servo_left.write(servoPos);
         servo_right.write((MAX + MIN) - servoPos);
-        delay(100);
+        delay(20);
     }
 }
 
@@ -149,6 +149,34 @@ void right(int speed) {
     analogWrite(BPWM, speed);
 }
 
+void correct_left(int speed) {
+// motor A direction
+    digitalWrite(AIN1, HIGH);
+    digitalWrite(AIN2, LOW);
+
+    // motor B direction
+    digitalWrite(BIN1, HIGH);
+    digitalWrite(BIN2, LOW);
+
+    // set speeds
+    analogWrite(APWM, speed * 1.5);
+    analogWrite(BPWM, speed);
+}
+
+void correct_right(int speed) {
+// motor A direction
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, HIGH);
+
+    // motor B direction
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, HIGH);
+
+    // set speeds
+    analogWrite(APWM, speed);
+    analogWrite(BPWM, speed * 1.5);
+}
+
 void stop() {
     // set speeds to 0
     analogWrite(APWM, 0);
@@ -221,13 +249,13 @@ int find_ball() {
     // SCANNING LEFT
     for (int i = 0; i < 500; i += 50) { // Pings US every 50 ms while it turns
         left(50);
+        delay(50);
         stop();
         dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
         if (dist != -1) { // If it finds ball
                 return 1;
             }
         }
-        delay(50);
     }
 
     delay(500);
@@ -235,6 +263,7 @@ int find_ball() {
     // SCANNING RIGHT
     for (int i = 0; i < 1000; i += 50) { // Pings US every 50 ms while it turns
         right(50);
+        delay(50);
         stop();
         dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
         if (dist != -1) { // If it finds ball
@@ -242,7 +271,6 @@ int find_ball() {
         } else {
             return 0;
         }
-        delay(50);
     }
 }
 
