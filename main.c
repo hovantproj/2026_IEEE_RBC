@@ -196,7 +196,7 @@ int verify_box() {
     if (dist <= 7) {
         return 2; // found ball therefore must be in box
     }
-    if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT) {
+    if (ir_mask == (LEFT_BIT | MID_BIT | RIGHT_BIT)) {
         // looking like its in the box so far
         // move forward another lil bit
         forward(50);
@@ -210,7 +210,7 @@ int verify_box() {
         if (dist <= 7) {
             return 2; // found ball therefore must be in box
         }
-        if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT) {
+        if (ir_mask == (LEFT_BIT | MID_BIT | RIGHT_BIT)) {
             return 1; // successful
         } else {
             return 0; // probably not in a box
@@ -254,7 +254,6 @@ int find_ball() {
         dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
         if (dist != -1) { // If it finds ball
                 return 1;
-            }
         }
     }
 
@@ -281,7 +280,7 @@ void grab() {
         dist = get_dist_ultrasonic();
         forward(10);
         delay(50);
-    } (while dist > THRESH_DIST); // Keep inching until within range
+    } while (dist > THRESH_DIST); // Keep inching until within range
 
     if (dist > 0 && dist < THRESH_DIST) { // Within thresh distance
         digitalWrite(ESP_LED, 1);
@@ -303,7 +302,7 @@ int movement_handler() {
     int ir_mask = normalise_ir(); // retrieve normalised IR values
 
     if (current_state==WAIT) {
-        if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT ) {
+        if (ir_mask == (LEFT_BIT | MID_BIT | RIGHT_BIT) ) {
             stop();
             return 1;
         } else {
@@ -313,7 +312,7 @@ int movement_handler() {
 
     if (current_state==START) {
         forward(50);
-        if (ir_mask != LEFT_BIT | MID_BIT | RIGHT_BIT) {
+        if (ir_mask != (LEFT_BIT | MID_BIT | RIGHT_BIT) ) {
             stop();
             return 1;
         } else {
@@ -323,15 +322,17 @@ int movement_handler() {
 
     if (current_state==LEAVE_END) {
         forward(50);
-        if (ir_mask != LEFT_BIT | MID_BIT | RIGHT_BIT) {
+        if (ir_mask != (LEFT_BIT | MID_BIT | RIGHT_BIT) ) {
+            Serial.print("IN BOX");
             stop();
             return 1;
         } else {
+            Serial.print("NOT IN BOX");
             return 0;
         }
     }
 
-    switch (mask) {
+    switch (ir_mask) {
         case 0: // 000 - no line detected
             forward(100);
             break;
@@ -355,6 +356,8 @@ int movement_handler() {
             stop();
             return 1; // return end found
     }
+
+    return 0;
 }
 
 // Main Functions
@@ -383,6 +386,9 @@ void setup() {
     pinMode(BIN2, OUTPUT);
     pinMode(BPWM, OUTPUT);
 
+    pinMode(STBY, OUTPUT);
+    digitalWrite(STBY, HIGH);
+
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
 
     // give 5 seconds to disconnect
@@ -392,6 +398,9 @@ void setup() {
 void loop() {
     delay(50);
 
+    Serial.print("STATE: ");
+    Serial.print(current_state);
+    Serial.print('\n');
     // after it dectects all 3 ir on for 3s
     //looks for ball with ultrasonic
     //{code for looking left and right till ball is detected}
@@ -400,13 +409,21 @@ void loop() {
     // get_dist_ultrasonic();
     switch(current_state) {
         case WAIT: // For at the start when we need to wait until it finds all 3 IRs on
-            movement_handler();
+            if (movement_handler() == 1) {
+              current_state = START;
+            }
+            
+            break;
         case START:
-            movement_handler();
+            if (movement_handler() == 1) {
+              current_state = LINE_FORWARD;
+            }
+            break;
         case LINE_FORWARD:
             if (movement_handler()==1) {
                 current_state=VERIFY_END;
             }
+            break;
         case VERIFY_END:
             if (verify_box() == 0) { // not in box
                 current_state = LINE_FORWARD;
@@ -415,33 +432,41 @@ void loop() {
             } else if (verify_box() == 2) {
                 current_state = GRAB_BALL; // found ball, skip to grabbing the ball
             }
+            break;
         case FIND_BALL:
             if (find_ball() == 1) {
                 current_state = GRAB_BALL;
             } else {
                 find_ball();
             }
-
+            break;
         case GRAB_BALL:
             grab();
             current_state = LEAVE_END;
+            break;
         case LEAVE_END:
             if (movement_handler() == 1) {
                 // has left end
                 current_state = LINE_BACK;
             }
+            break;
         case LINE_BACK:
-            movement_handler();
+            if (movement_handler() == 1) {
+              current_state = VERIFY_START;
+            }
+            break;
         case VERIFY_START:
             if (verify_box()==1) {
                 current_state = STOP;
             }
+            break;
         case STOP:
             forward(10);
             delay(500);
             stop();
             open();
             delay(10000);
+            break;
     }
 }
 
