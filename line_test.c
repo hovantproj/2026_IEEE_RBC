@@ -107,14 +107,6 @@ int movementHandler(int analogLeft, int analogMiddle, int analogRight) {
     mask |= (analogMiddle >= LINE_THRESHOLD) ? MID_BIT : 0;
     mask |= (analogRight >= LINE_THRESHOLD) ? RIGHT_BIT : 0;
 
-    if (current_state==WAIT) {
-        
-    }
-
-    if (current_state==START) {
-        if ()
-    }
-
     switch (mask) {
         case 0: // 000 - no line detected
             forward(50);
