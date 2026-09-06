@@ -158,6 +158,25 @@ void setup() {
 }
 
 void loop() {
-    movementHandler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
-    delay(100);
+    // verify box values check
+    forward(50);
+    delay(500);
+    forward(50);
+    delay(2000);
+
+
+    // turning to find ball values check
+    for (int i=0; i < 500; i+=50) {
+        left(50);
+        delay(50);
+    }
+
+    delay(500);
+
+    for (int i=0; i < 500; i+=50) {
+        right(50);
+        delay(50);
+    }
+
+    delay(2000);
 }
