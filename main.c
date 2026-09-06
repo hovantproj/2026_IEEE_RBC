@@ -167,9 +167,34 @@ void stop() {
     analogWrite(BPWM, 0);
 }
 
-int verify() {
+int verify_box() {
+    // move forward a lil bit
+    forward(50);
+    delay(500);
     stop();
-    forward(10);
+
+    // check IR
+    int ir_mask = normalise_ir();
+    // check US
+    int dist = get_dist_ultrasonic();
+    if (dist <= 7) {
+        return 2; // found ball therefore must be in box
+    }
+    if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT) {
+        // looking like its in the box so far
+        // move forward another lil bit
+        forward(50);
+        delay(500);
+        stop();
+
+        // check IR again
+        ir_mask = normalise_ir();
+        if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT) {
+            return 1; // successful
+        } else {
+            return 0; // probably not in a box
+        }
+    }
 }
 
 int normalise_ir() {
@@ -282,7 +307,7 @@ void loop() {
     //{code for driving to the ball until distance is reached}
 
     // get_dist_ultrasonic();
-    switch(STATE) {
+    switch(current_state) {
         case WAIT: // For at the start when we need to wait until it finds all 3 IRs on
             movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
         case START:
@@ -290,7 +315,13 @@ void loop() {
         case LINE_FORWARD:
             movement_handler(analogRead(IR3), analogRead(IR2), analogRead(IR1));
         case VERIFY_END:
-            
+            if (verify_box() == 0) { // not in box
+                current_state = LINE_FORWARD;
+            } else if (verify_box() == 1) { // in box, proceed to find ball
+                current_state = FIND_BALL;
+            } else if (verify_box() == 1) {
+                current_state = GRAB_BALL; // found ball, skip to grabbing the ball
+            }
         case FIND_BALL:
         case GRAB_BALL:
         case LEAVE_END:
