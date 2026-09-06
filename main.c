@@ -80,7 +80,7 @@ void close() {
 
 // Ultrasonic Functions
 
-void get_dist_ultrasonic() {
+int get_dist_ultrasonic() {
     int dist = ultrasonic.ping_cm(); // Send ping, get distance in cm (0 = outside set distance range)
     dist = (dist > 0) ? dist : -1; // If dist > 0 then set dist, otherwise return -1
 
@@ -101,6 +101,8 @@ void get_dist_ultrasonic() {
     Serial.print("Ping: ");
     Serial.print(dist);
     Serial.print("cm\n");
+
+    return dist;
 }
 
 // Movement fucntions
@@ -220,6 +222,38 @@ int normalise_ir() {
     return mask; // return IR mask (0 = white, 1 = black)
 }
 
+int find_ball() {
+    int dist;
+
+    // SCANNING LEFT
+    for (int i = 0; i < 500; i += 50) { // Pings US every 50 ms while it turns
+        left(50);
+        dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
+        if (dist != -1) { // If it finds ball
+            
+            do { // And the ball is too far away
+                dist = get_dist_ultrasonic();
+                forward(10);
+                delay(50);
+            } (while dist > THRESH_DIST); // Keep inching until within range
+        }
+    }
+
+    // SCANNING RIGHT
+    for (int i = 0; i < 500; i += 50) { // Pings US every 50 ms while it turns
+        right(50);
+        dist = get_dist_ultrasonic(); // Note that this closes claw if close enough
+        if (dist != -1) { // If it finds ball
+            
+            do { // And the ball is too far away
+                dist = get_dist_ultrasonic();
+                forward(10);
+                delay(50);
+            } (while dist > THRESH_DIST); // Keep inching until within range
+        }
+    }
+}
+
 int movement_handler() {
     
     int ir_mask = normalise_ir(); // retrieve normalised IR values
@@ -323,6 +357,7 @@ void loop() {
                 current_state = GRAB_BALL; // found ball, skip to grabbing the ball
             }
         case FIND_BALL:
+            find_ball();
         case GRAB_BALL:
         case LEAVE_END:
         case LINE_BACK:
