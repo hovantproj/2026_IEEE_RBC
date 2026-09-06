@@ -44,7 +44,7 @@ bool claw_opened;
 #define IR3 39
 
 // Line threshold
-#define LINE_THRESHOLD = 16
+#define LINE_THRESHOLD 16
 #define LEFT_BIT   (1 << 2)  // 4
 #define MID_BIT    (1 << 1)  // 2
 #define RIGHT_BIT  (1 << 0)  // 1
