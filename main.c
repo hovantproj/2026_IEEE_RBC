@@ -47,7 +47,7 @@ bool claw_opened;
 #define IR3 39
 
 // Line threshold
-#define LINE_THRESHOLD 16
+#define LINE_THRESHOLD 4
 #define LEFT_BIT   (1 << 2)  // 4
 #define MID_BIT    (1 << 1)  // 2
 #define RIGHT_BIT  (1 << 0)  // 1
@@ -404,7 +404,9 @@ void loop() {
         case START:
             movement_handler();
         case LINE_FORWARD:
-            movement_handler();
+            if (movement_handler()==1) {
+                current_state=VERIFY_END;
+            }
         case VERIFY_END:
             if (verify_box() == 0) { // not in box
                 current_state = LINE_FORWARD;
