@@ -191,11 +191,18 @@ int verify_box() {
 
         // check IR again
         ir_mask = normalise_ir();
+        // check US again
+        dist = get_dist_ultrasonic();
+        if (dist <= 7) {
+            return 2; // found ball therefore must be in box
+        }
         if (ir_mask == LEFT_BIT | MID_BIT | RIGHT_BIT) {
             return 1; // successful
         } else {
             return 0; // probably not in a box
         }
+    } else {
+        return 0;
     }
 }
 
@@ -353,7 +360,7 @@ void loop() {
                 current_state = LINE_FORWARD;
             } else if (verify_box() == 1) { // in box, proceed to find ball
                 current_state = FIND_BALL;
-            } else if (verify_box() == 1) {
+            } else if (verify_box() == 2) {
                 current_state = GRAB_BALL; // found ball, skip to grabbing the ball
             }
         case FIND_BALL:
