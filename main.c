@@ -30,7 +30,7 @@ Servo servo_left;
 bool claw_opened;
 
 // define motor pins
-#define AIN1 27
+#define AIN1 27 // motor A = left, motor B = right
 #define AIN2 14
 #define APWM 25
 #define BIN1 13
